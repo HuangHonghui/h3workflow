@@ -1,0 +1,21 @@
+{
+  "name": "h3workflow",
+  "version": "1.0.0",
+  "description": "自动编译scss，压缩css，js文件等",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "workflow"
+  ],
+  "author": "honghuihuang",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-csso": "^1.0.0",
+    "gulp-scss": "^1.1.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0"
+  }
+}

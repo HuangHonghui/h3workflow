@@ -1,0 +1,9 @@
+@charset "UTF-8";
+@import "mixins";
+body{
+	background: green;
+}
+
+.clearfix{
+	@include clearfix();
+}

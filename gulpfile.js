@@ -1,8 +1,21 @@
+/**
+ * Usage:
+ * $ gulp devscss 编译并压缩scss
+ * $ gulp devjs 复制js到目标路径
+ * $ gulp dev 同时执行上面2个任务
+ * ============================
+ * $ gulp pubscss 编译并压缩scss
+ * $ gulp pubjs 复制js到目标路径
+ * $ gulp pub 同时执行上面2个任务
+ */
+
 var gulp = require('gulp');
 var scss = require('gulp-scss'); // 编译scss为css
 var csso = require('gulp-csso'); // 压缩css
 var uglify = require('gulp-uglify'); // 压缩js
 var sourcemaps = require('gulp-sourcemaps'); // 生成sourcemaps
+var rename = require('gulp-rename');
+var concat = require('gulp-concat');
 
 var scssSourcePath = "src/scss/*.scss",
     sourceMapPath = "./", // 相对于目标路径
@@ -11,6 +24,21 @@ var scssSourcePath = "src/scss/*.scss",
     jsSourcePath = "src/scripts/**/*.js",
     jsDevPath = "dev/js",
     jsPath = "dist/js";
+    
+    // 配置合并的文件顺序，目标路径，文件名等
+    // 如果为空则只压缩文件
+var jsArray = [
+//    {
+//        pathArray:['src/scripts/plugins.js','src/scripts/main.js'],
+//        newFileName:"all.js",
+//        targetPath:jsPath
+//    },
+//    {
+//        pathArray:jsSourcePath,
+//        newFileName:"good.js",
+//        targetPath:jsPath
+//    }
+];
 
 gulp.task('default',function () {
 	
@@ -30,9 +58,12 @@ gulp.task("devscss", function () {
 });
 gulp.task("devjs", function () {
     gulp.src( jsSourcePath )
-    .pipe( sourcemaps.init() )
-    .pipe( uglify() )
-    .pipe(sourcemaps.write( sourceMapPath ))
+//    .pipe( sourcemaps.init() )
+//    .pipe( uglify() )
+//    .pipe( rename(function (path) {
+//        path.basename += ".min";
+//    }) )
+//    .pipe(sourcemaps.write( sourceMapPath ))
     .pipe(gulp.dest( jsDevPath ));
 });
 gulp.task('dev',["devscss","devjs"]);
@@ -44,11 +75,38 @@ gulp.task("pubscss", function () {
         {"bundleExec": false}
     )).pipe(
         csso()
-    ).pipe(gulp.dest( cssPath ));
+    )
+    .pipe( rename(function (path) {
+        path.basename += ".min";
+    }) )
+    .pipe(gulp.dest( cssPath ));
 });
-gulp.task("pubjs", function () {
-    gulp.src( jsSourcePath )
+
+// 合并js的方法
+function concatJs(obj) {
+    gulp.src( obj.pathArray )
+    .pipe( concat( obj.newFileName ) )
     .pipe( uglify() )
-    .pipe(gulp.dest( jsPath ));
+    .pipe( rename(function (path) {
+        path.basename += ".min";
+    }) )
+    .pipe(gulp.dest( obj.targetPath ));
+}
+
+
+gulp.task("pubjs", function () {
+    if(jsArray && jsArray.length>0){
+        jsArray.map(concatJs);
+    }else{
+        gulp.src( jsSourcePath )
+            .pipe( uglify() )
+            .pipe( rename(function (path) {
+                path.basename += ".min";
+            }) )
+            .pipe(gulp.dest( jsPath ));
+    }
+    
 });
+
+
 gulp.task('pub',["pubscss","pubjs"]);

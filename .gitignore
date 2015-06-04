@@ -4,4 +4,4 @@ node_modules/*
 .gulp-scss-cache/*
 .sass-cache/*
 dev/*
-#dist/*
+dist/*

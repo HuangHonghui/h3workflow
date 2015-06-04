@@ -17,6 +17,7 @@ var uglify = require('gulp-uglify'); // 压缩js
 var sourcemaps = require('gulp-sourcemaps'); // 生成sourcemaps
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
+var autoprefixer = require('gulp-autoprefixer');
 
 var scssSourcePath = "src/scss/*.scss",
     sourceMapPath = "./", // 相对于目标路径
@@ -54,6 +55,7 @@ gulp.task("devscss", function () {
             "bundleExec": false
         }
     ))
+    .pipe(autoprefixer())
     .pipe(sourcemaps.write( sourceMapPath ))
     .pipe(gulp.dest( cssDevPath ));
 });
@@ -74,7 +76,9 @@ gulp.task("pubscss", function () {
     gulp.src( scssSourcePath )
     .pipe(scss(
         {"bundleExec": false}
-    )).pipe(
+    ))
+    .pipe(autoprefixer())
+    .pipe(
         csso()
     )
     .pipe( rename(function (path) {
